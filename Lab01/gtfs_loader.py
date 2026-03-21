@@ -51,7 +51,7 @@ class GTFSLoader:
     def get_active_services_for_date(self, target_date: datetime) -> set[str]:
             date_int = int(target_date.strftime('%Y%m%d'))
             day_name = target_date.strftime('%A').lower()
-            logger.debug(f"Searching services for date: {target_date.strftime('%Y-%m-%d')} ({day_name})")
+            logger.debug(f"Searching services for date: {target_date.strftime('%Y-%m-%d')} ({day_name})...")
             
             try:
                 base_services_conditions = (
@@ -99,7 +99,7 @@ class GTFSLoader:
                 
                 final_stop_times = final_stop_times.sort_values(by=['trip_id', 'stop_sequence'])
                 
-                logger.success(f"Filtering ended. Generated {len(final_stop_times)} edges.")
+                logger.success(f"Filtering ended. Searched {len(final_stop_times)} stop times.")
                 return self.stops, final_stop_times
                 
             except Exception as e:
