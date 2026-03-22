@@ -84,7 +84,9 @@ class PathFinder:
             if current_node_id == end_stop_id:
                 calc_time = time.perf_counter() - start_calc_time
                 total_travel_time = current_time - start_time
-                logger.success(f"{algo_name} {opt_name}| Path found! Transfers: {current_transfers}.")
+                best_cost = self.__format_print_trip_total_time(total_travel_time) if optimize_for == 't' else current_transfers
+                info = "Time" if optimize_for == 't' else "Transfers"
+                logger.success(f"{algo_name} {opt_name}| Path found! {info}: {best_cost}.")
                 path = self.__reconstruct_path(came_from, current_key)
                 return path, total_travel_time, calc_time
                 
