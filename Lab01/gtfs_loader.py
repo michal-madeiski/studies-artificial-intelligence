@@ -76,7 +76,7 @@ class GTFSLoader:
                 logger.exception(f"Error while searching active services: {e}")
                 raise
 
-    def filter_data_for_date(self, target_date: datetime) -> tuple[pd.DataFrame, pd.DataFrame]:
+    def filter_data_for_date(self, target_date: datetime) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
             logger.info("Starting filtering data for provided date...")
             
             try:
@@ -98,9 +98,16 @@ class GTFSLoader:
                 )
                 
                 final_stop_times = final_stop_times.sort_values(by=['trip_id', 'stop_sequence'])
+
+                stop_routes_df = final_stop_times.merge(
+                    self.trips[['trip_id', 'route_id']], 
+                    on='trip_id', 
+                    how='left'
+                )
+                stop_to_routes = stop_routes_df.groupby('stop_id')['route_id'].apply(set).to_dict()
                 
                 logger.success(f"Filtering ended. Searched {len(final_stop_times)} stop times.")
-                return self.stops, final_stop_times
+                return self.stops, final_stop_times, stop_to_routes
                 
             except Exception as e:
                 logger.exception("Error while merging and filtering data frames.")

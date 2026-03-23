@@ -14,8 +14,9 @@ from settings import (PLATFORM_PLATFORM_TRANSFER_TIME, PLATFROM_STATION_TRANSFER
 
 
 class PathFinder:
-    def __init__(self, graph: Graph) -> None:
+    def __init__(self, graph: Graph, stop_to_routes: Optional[dict]) -> None:
         self.graph = graph
+        self.stop_to_routes = stop_to_routes if stop_to_routes is not None else {}
 
     def find_shortest_path_dijkstra(
         self,
@@ -164,8 +165,7 @@ class PathFinder:
             
         return (priority_score, secondary_score, counter, current_time, transfers, node_id, trip_id)
     
-    @staticmethod
-    def __heuristic(node1: Node, node2: Node, optimize_for: str = 't') -> pd.Timedelta | int:
+    def __heuristic(self, node1: Node, node2: Node, optimize_for: str = 't') -> pd.Timedelta | int:
         lat1, lon1 = math.radians(node1.lat), math.radians(node1.lon)
         lat2, lon2 = math.radians(node2.lat), math.radians(node2.lon)
         dLat, dLon = lat2 - lat1, lon2 - lon1
@@ -178,6 +178,12 @@ class PathFinder:
             hours = distance_km / TRAIN_SPEED
             return pd.Timedelta(hours=hours)
         else:
+            routes_curr = self.stop_to_routes.get(node1.stop_id, set())
+            routes_target = self.stop_to_routes.get(node2.stop_id, set())
+            
+            if not routes_curr.isdisjoint(routes_target):
+                return 0
+            
             transfers = math.floor(distance_km / TRAIN_MAX_DISTANCE)
             return transfers
     
