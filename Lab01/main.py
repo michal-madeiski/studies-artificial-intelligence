@@ -17,11 +17,13 @@ def main():
     loader = GTFSLoader(data_dir=DATA_DIR)
     loader.load_data()
 
-    stops_df, active_stop_times_df, stop_to_routes = loader.filter_data_for_date(travel_date)
+    stops_df, active_stop_times_df, stop_to_routes = loader.filter_data_for_date(
+        travel_date
+    )
 
     graph = Graph()
     graph.build_graph(stops_df, active_stop_times_df)
-    
+
     finder = PathFinder(graph, stop_to_routes)
     path, total_time, calc_time = finder.find_shortest_path_astar(
         start_stop_id=args.start_stop_id,
