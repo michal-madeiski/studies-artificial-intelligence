@@ -1,5 +1,6 @@
+import sys
 from typing import Optional
-from settings import PLAYER_BLACK, PLAYER_WHITE
+from settings import PLAYER_BLACK, PLAYER_WHITE, LAST_MOVE_SIGN, BOARD_SPACE
 from helpers import validate_start_grid_values, generate_start_grid
 
 
@@ -45,6 +46,60 @@ class Board:
         for row in self.grid:
             print(" ".join(row))
 
+    def get_possible_moves(self, player: str) -> list[tuple[int, int], tuple[int, int]]:
+        moves = []
+
+        direction = 1 if player == PLAYER_BLACK else -1
+        opponent = PLAYER_WHITE if player == PLAYER_BLACK else PLAYER_BLACK
+
+        for r in range(self.rows):
+            for c in range(self.cols):
+                if self.grid[r][c] == player:
+                    curr_location = (r, c)
+                    new_row = r + direction
+                    new_col_1 = c - 1
+                    new_col_2 = c + 1
+
+                    if (
+                        self.grid[new_row][c] not in [player, opponent]
+                        and 0 <= new_row < self.rows
+                    ):
+                        moves.append((curr_location, (new_row, c)))
+                    if (
+                        self.grid[new_row][new_col_1] != player
+                        and 0 <= new_row < self.rows
+                        and 0 <= new_col_1 < self.cols
+                    ):
+                        moves.append((curr_location, (new_row, new_col_1)))
+                    if (
+                        self.grid[new_row][new_col_2] != player
+                        and 0 <= new_row < self.rows
+                        and 0 <= new_col_2 < self.cols
+                    ):
+                        moves.append((curr_location, (new_row, new_col_2)))
+        return moves
+
+    def make_move(
+        self, move: tuple[tuple[int, int], tuple[int, int]], player: str
+    ) -> "Board":
+        new_grid = [row[:] for row in self.grid]
+
+        if self.last_move is not None:
+            old_start_r, old_start_c = self.last_move[0]
+            if new_grid[old_start_r][old_start_c] == LAST_MOVE_SIGN:
+                new_grid[old_start_r][old_start_c] = BOARD_SPACE
+        else:
+            for r in range(self.rows):
+                for c in range(self.cols):
+                    if new_grid[r][c] == LAST_MOVE_SIGN:
+                        new_grid[r][c] = BOARD_SPACE
+
+        (start_r, start_c), (end_r, end_c) = move
+        new_grid[start_r][start_c] = LAST_MOVE_SIGN
+        new_grid[end_r][end_c] = player
+
+        return Board(grid=new_grid, last_move=move)
+
     def is_winner(self, player: str) -> bool:
         target_row = self.rows - 1 if player == PLAYER_BLACK else 0
         return any(cell == player for cell in self.grid[target_row])
@@ -58,3 +113,31 @@ class Board:
 
     def is_game_over(self) -> bool:
         return self.get_winner() is not None
+
+
+def test():
+    input_data = sys.stdin.read().strip()
+
+    if not input_data:
+        print("Błąd: Nie podano żadnych danych na wejściu.")
+        return
+
+    print("--- 1. Surowe dane wczytane z pliku ---")
+    print(input_data)
+    print("\n--- 2. Przekazanie do klasy Board i wywołanie display() ---")
+
+    board = Board(grid_state_str=input_data)
+
+    board.display()
+
+    print(f"\nWymiary: {board.rows} wierszy, {board.cols} kolumn.")
+
+    if getattr(board, "last_move", None):
+        print(f"Wykryto zapamiętany ostatni ruch na wejściu.")
+
+    new_board = board.make_move(((6, 0), (5, 0)), PLAYER_WHITE)
+    new_board.display()
+
+
+if __name__ == "__main__":
+    test()
