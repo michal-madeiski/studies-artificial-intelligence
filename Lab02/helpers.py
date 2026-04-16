@@ -19,6 +19,18 @@ def validate_start_grid_values(rows: Optional[int], cols: Optional[int]) -> bool
         raise ValueError("Invalid grid size: should be min. 4x4 square!")
 
 
+def validate_rows(rows: int, board_rows: int) -> bool:
+    return 0 <= rows < board_rows
+
+
+def validate_cols(cols: int, board_cols: int) -> bool:
+    return 0 <= cols < board_cols
+
+
+def validate_cell(rows: int, cols: int, board_rows: int, board_cols: int) -> bool:
+    return validate_rows(rows, board_rows) and validate_cols(cols, board_cols)
+
+
 if __name__ == "__main__":
     test_rows, test_cols = 8, 8
     validate_start_grid_values(test_rows, test_cols)

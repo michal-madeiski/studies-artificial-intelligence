@@ -1,7 +1,13 @@
 import sys
 from typing import Optional
 from settings import PLAYER_BLACK, PLAYER_WHITE, LAST_MOVE_SIGN, BOARD_SPACE
-from helpers import validate_start_grid_values, generate_start_grid
+from helpers import (
+    validate_start_grid_values,
+    generate_start_grid,
+    validate_rows,
+    validate_cols,
+    validate_cell,
+)
 
 
 class Board:
@@ -60,21 +66,17 @@ class Board:
                     new_col_1 = c - 1
                     new_col_2 = c + 1
 
-                    if (
-                        self.grid[new_row][c] not in [player, opponent]
-                        and 0 <= new_row < self.rows
-                    ):
+                    if self.grid[new_row][c] not in [
+                        player,
+                        opponent,
+                    ] and validate_rows(new_row, self.rows):
                         moves.append((curr_location, (new_row, c)))
-                    if (
-                        self.grid[new_row][new_col_1] != player
-                        and 0 <= new_row < self.rows
-                        and 0 <= new_col_1 < self.cols
+                    if self.grid[new_row][new_col_1] != player and validate_cell(
+                        new_row, new_col_1, self.rows, self.cols
                     ):
                         moves.append((curr_location, (new_row, new_col_1)))
-                    if (
-                        self.grid[new_row][new_col_2] != player
-                        and 0 <= new_row < self.rows
-                        and 0 <= new_col_2 < self.cols
+                    if self.grid[new_row][new_col_2] != player and validate_cell(
+                        new_row, new_col_2, self.rows, self.cols
                     ):
                         moves.append((curr_location, (new_row, new_col_2)))
         return moves
