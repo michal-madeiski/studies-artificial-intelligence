@@ -1,4 +1,3 @@
-from typing import Optional
 from settings import PLAYER_BLACK, PLAYER_WHITE, BOARD_SPACE
 
 
@@ -14,7 +13,7 @@ def generate_start_grid(rows: int, cols: int) -> list[list[str]]:
     return grid
 
 
-def validate_start_grid_values(rows: Optional[int], cols: Optional[int]) -> bool:
+def validate_start_grid_values(rows: int, cols: int) -> bool:
     if rows < 4 or cols < 4 or (rows != cols):
         raise ValueError("Invalid grid size: should be min. 4x4 square!")
 

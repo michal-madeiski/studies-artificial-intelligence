@@ -3,14 +3,14 @@ from helpers import validate_cell
 from settings import PLAYER_BLACK, PLAYER_WHITE, BOARD_SPACE, LAST_MOVE_SIGN
 
 
-def distance_to_win_strategy(board: Board, player: str, risk: int = 3) -> float:
+def distance_to_win_strategy(board: Board, player: str) -> float:
     max_player_forward = 0
     max_opponent_forward = 0
     max_forward = board.rows - 1
 
     for r in range(board.rows):
         for c in range(board.cols):
-            cell = board[r][c]
+            cell = board.grid[r][c]
 
             if cell in [BOARD_SPACE, LAST_MOVE_SIGN]:
                 continue
@@ -29,7 +29,7 @@ def distance_to_win_strategy(board: Board, player: str, risk: int = 3) -> float:
                 else:
                     max_opponent_forward = max(max_opponent_forward, forward)
 
-    score = (max_player_forward) * risk - max_opponent_forward
+    score = (max_player_forward) * 3 - max_opponent_forward
     return float(score)
 
 
@@ -48,7 +48,7 @@ def pawn_count_strategy(board: Board, player: str) -> float:
     return float(score)
 
 
-def threat_map_strategy(board: "Board", player: str, risk: int = 3) -> float:
+def threat_map_strategy(board: Board, player: str) -> float:
     opponent = PLAYER_WHITE if player == PLAYER_BLACK else PLAYER_BLACK
 
     player_free_kill = 0
@@ -97,9 +97,9 @@ def threat_map_strategy(board: "Board", player: str, risk: int = 3) -> float:
                         opponent_defended += 1
 
     score = 0
-    score -= player_free_kill * risk
+    score -= player_free_kill * 3
     score -= player_defended
-    score += opponent_free_kill * risk
+    score += opponent_free_kill * 3
     score += opponent_defended
 
     return float(score)

@@ -46,7 +46,7 @@ class Board:
 
             self.rows = rows
             self.cols = cols
-            self.grid = generate_start_grid(rows, cols)
+            self.grid = generate_start_grid(self.rows, self.cols)
 
     def display(self) -> None:
         for row in self.grid:
@@ -66,17 +66,21 @@ class Board:
                     new_col_1 = c - 1
                     new_col_2 = c + 1
 
-                    if self.grid[new_row][c] not in [
+                    if validate_rows(new_row, self.rows) and self.grid[new_row][
+                        c
+                    ] not in [
                         player,
                         opponent,
-                    ] and validate_rows(new_row, self.rows):
+                    ]:
                         moves.append((curr_location, (new_row, c)))
-                    if self.grid[new_row][new_col_1] != player and validate_cell(
-                        new_row, new_col_1, self.rows, self.cols
+                    if (
+                        validate_cell(new_row, new_col_1, self.rows, self.cols)
+                        and self.grid[new_row][new_col_1] != player
                     ):
                         moves.append((curr_location, (new_row, new_col_1)))
-                    if self.grid[new_row][new_col_2] != player and validate_cell(
-                        new_row, new_col_2, self.rows, self.cols
+                    if (
+                        validate_cell(new_row, new_col_2, self.rows, self.cols)
+                        and self.grid[new_row][new_col_2] != player
                     ):
                         moves.append((curr_location, (new_row, new_col_2)))
         return moves
@@ -114,6 +118,12 @@ class Board:
         return None
 
     def is_game_over(self) -> bool:
+        if len(self.get_possible_moves(PLAYER_WHITE)) == 0:
+            return True
+
+        if len(self.get_possible_moves(PLAYER_BLACK)) == 0:
+            return True
+
         return self.get_winner() is not None
 
 
