@@ -1,5 +1,5 @@
 from board import Board
-from helpers import validate_cell
+from helpers import validate_cell, validate_cols
 from settings import PLAYER_BLACK, PLAYER_WHITE, BOARD_SPACE, LAST_MOVE_SIGN
 
 
@@ -79,7 +79,7 @@ def threat_map_strategy(board: Board, player: str) -> float:
             for left_right in [-1, 1]:
                 defender_row, defender_col = r + backward_direction, c + left_right
                 if (
-                    validate_cell(attacker_row, attacker_col, board.rows, board.cols)
+                    validate_cell(defender_row, defender_col, board.rows, board.cols)
                     and board.grid[defender_row][defender_col] == player
                 ):
                     defenders += 1
