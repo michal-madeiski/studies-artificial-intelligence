@@ -125,31 +125,3 @@ class Board:
             return True
 
         return self.get_winner() is not None
-
-
-def test():
-    input_data = sys.stdin.read().strip()
-
-    if not input_data:
-        print("Błąd: Nie podano żadnych danych na wejściu.")
-        return
-
-    print("--- 1. Surowe dane wczytane z pliku ---")
-    print(input_data)
-    print("\n--- 2. Przekazanie do klasy Board i wywołanie display() ---")
-
-    board = Board(grid_state_str=input_data)
-
-    board.display()
-
-    print(f"\nWymiary: {board.rows} wierszy, {board.cols} kolumn.")
-
-    if getattr(board, "last_move", None):
-        print(f"Wykryto zapamiętany ostatni ruch na wejściu.")
-
-    new_board = board.make_move(((6, 0), (5, 0)), PLAYER_WHITE)
-    new_board.display()
-
-
-if __name__ == "__main__":
-    test()
