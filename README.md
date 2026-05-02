@@ -5,5 +5,6 @@ Each lab class dir contains an implementation of tasks about the given topic.
 
 * Lab01 - heuristic search algorithms for optimization problems
 * Lab02 - breakthrough game implementation with minimax and alpha-beta pruning
+* Lab03 - introduction to planning domain definition language
 
 _Lab[number] is a three-week homework assignment._
