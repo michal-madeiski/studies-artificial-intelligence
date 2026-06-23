@@ -7,5 +7,6 @@ Each lab class dir contains an implementation of tasks about the given topic.
 * Lab02 - breakthrough game implementation with minimax and alpha-beta pruning
 * Lab03 - introduction to planning domain definition language
 * Lab04 - introduction to machine learning
+* Lab05 - introduction to NLP
 
 _Lab[number] is a three-week homework assignment._
